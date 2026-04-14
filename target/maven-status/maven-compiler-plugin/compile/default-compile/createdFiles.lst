@@ -1,0 +1,8 @@
+com\skillgap\SkillGapApplication.class
+com\skillgap\service\DataLoader.class
+com\skillgap\controller\SkillGapController.class
+com\skillgap\model\Role.class
+com\skillgap\service\SkillGapAnalyzerService.class
+com\skillgap\service\ApiService.class
+com\skillgap\model\AnalysisResult.class
+com\skillgap\model\User.class

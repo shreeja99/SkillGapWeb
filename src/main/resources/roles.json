@@ -1,0 +1,134 @@
+{
+    "roles": [
+        {
+            "roleName": "java developer",
+            "requiredSkills": [
+                "java",
+                "spring boot",
+                "hibernate",
+                "rest api",
+                "sql",
+                "git",
+                "maven"
+            ]
+        },
+        {
+            "roleName": "frontend developer",
+            "requiredSkills": [
+                "html",
+                "css",
+                "javascript",
+                "react",
+                "responsive design",
+                "git"
+            ]
+        },
+        {
+            "roleName": "full stack developer",
+            "requiredSkills": [
+                "java",
+                "spring boot",
+                "html",
+                "css",
+                "javascript",
+                "react",
+                "sql",
+                "rest api",
+                "git"
+            ]
+        },
+        {
+            "roleName": "python developer",
+            "requiredSkills": [
+                "python",
+                "django",
+                "flask",
+                "rest api",
+                "sql",
+                "git"
+            ]
+        },
+        {
+            "roleName": "data scientist",
+            "requiredSkills": [
+                "python",
+                "numpy",
+                "pandas",
+                "machine learning",
+                "statistics",
+                "data visualization",
+                "sql"
+            ]
+        },
+        {
+            "roleName": "machine learning engineer",
+            "requiredSkills": [
+                "python",
+                "scikit-learn",
+                "tensorflow",
+                "pytorch",
+                "data preprocessing",
+                "model deployment",
+                "mlops"
+            ]
+        },
+        {
+            "roleName": "cybersecurity analyst",
+            "requiredSkills": [
+                "network security",
+                "ethical hacking",
+                "penetration testing",
+                "linux",
+                "firewalls",
+                "cryptography",
+                "wireshark"
+            ]
+        },
+        {
+            "roleName": "cloud engineer",
+            "requiredSkills": [
+                "aws",
+                "azure",
+                "docker",
+                "kubernetes",
+                "terraform",
+                "linux",
+                "networking"
+            ]
+        },
+        {
+            "roleName": "devops engineer",
+            "requiredSkills": [
+                "docker",
+                "kubernetes",
+                "jenkins",
+                "ci cd",
+                "linux",
+                "git",
+                "terraform"
+            ]
+        },
+        {
+            "roleName": "android developer",
+            "requiredSkills": [
+                "java",
+                "kotlin",
+                "android sdk",
+                "xml",
+                "firebase",
+                "rest api"
+            ]
+        },
+        {
+            "roleName": "flutter developer",
+            "requiredSkills": [
+                "dart",
+                "flutter",
+                "firebase",
+                "rest api",
+                "state management",
+                "ui ux"
+            ]
+        }
+    ]
+}
