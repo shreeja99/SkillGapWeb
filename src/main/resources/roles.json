@@ -1,134 +1,70 @@
 {
-    "roles": [
-        {
-            "roleName": "java developer",
-            "requiredSkills": [
-                "java",
-                "spring boot",
-                "hibernate",
-                "rest api",
-                "sql",
-                "git",
-                "maven"
-            ]
-        },
-        {
-            "roleName": "frontend developer",
-            "requiredSkills": [
-                "html",
-                "css",
-                "javascript",
-                "react",
-                "responsive design",
-                "git"
-            ]
-        },
-        {
-            "roleName": "full stack developer",
-            "requiredSkills": [
-                "java",
-                "spring boot",
-                "html",
-                "css",
-                "javascript",
-                "react",
-                "sql",
-                "rest api",
-                "git"
-            ]
-        },
-        {
-            "roleName": "python developer",
-            "requiredSkills": [
-                "python",
-                "django",
-                "flask",
-                "rest api",
-                "sql",
-                "git"
-            ]
-        },
-        {
-            "roleName": "data scientist",
-            "requiredSkills": [
-                "python",
-                "numpy",
-                "pandas",
-                "machine learning",
-                "statistics",
-                "data visualization",
-                "sql"
-            ]
-        },
-        {
-            "roleName": "machine learning engineer",
-            "requiredSkills": [
-                "python",
-                "scikit-learn",
-                "tensorflow",
-                "pytorch",
-                "data preprocessing",
-                "model deployment",
-                "mlops"
-            ]
-        },
-        {
-            "roleName": "cybersecurity analyst",
-            "requiredSkills": [
-                "network security",
-                "ethical hacking",
-                "penetration testing",
-                "linux",
-                "firewalls",
-                "cryptography",
-                "wireshark"
-            ]
-        },
-        {
-            "roleName": "cloud engineer",
-            "requiredSkills": [
-                "aws",
-                "azure",
-                "docker",
-                "kubernetes",
-                "terraform",
-                "linux",
-                "networking"
-            ]
-        },
-        {
-            "roleName": "devops engineer",
-            "requiredSkills": [
-                "docker",
-                "kubernetes",
-                "jenkins",
-                "ci cd",
-                "linux",
-                "git",
-                "terraform"
-            ]
-        },
-        {
-            "roleName": "android developer",
-            "requiredSkills": [
-                "java",
-                "kotlin",
-                "android sdk",
-                "xml",
-                "firebase",
-                "rest api"
-            ]
-        },
-        {
-            "roleName": "flutter developer",
-            "requiredSkills": [
-                "dart",
-                "flutter",
-                "firebase",
-                "rest api",
-                "state management",
-                "ui ux"
-            ]
-        }
-    ]
+  "roles": [
+    {
+      "name": "java developer",
+      "required_skills": [
+        "java", "spring boot", "hibernate", "rest api", "sql", "git", "maven"
+      ]
+    },
+    {
+      "name": "frontend developer",
+      "required_skills": [
+        "html", "css", "javascript", "react", "responsive design", "git"
+      ]
+    },
+    {
+      "name": "full stack developer",
+      "required_skills": [
+        "java", "spring boot", "html", "css", "javascript", "react", "sql", "rest api", "git"
+      ]
+    },
+    {
+      "name": "python developer",
+      "required_skills": [
+        "python", "django", "flask", "rest api", "sql", "git"
+      ]
+    },
+    {
+      "name": "data scientist",
+      "required_skills": [
+        "python", "numpy", "pandas", "machine learning", "statistics", "data visualization", "sql"
+      ]
+    },
+    {
+      "name": "machine learning engineer",
+      "required_skills": [
+        "python", "scikit-learn", "tensorflow", "pytorch", "data preprocessing", "model deployment", "mlops"
+      ]
+    },
+    {
+      "name": "cybersecurity analyst",
+      "required_skills": [
+        "network security", "ethical hacking", "penetration testing", "linux", "firewalls", "cryptography", "wireshark"
+      ]
+    },
+    {
+      "name": "cloud engineer",
+      "required_skills": [
+        "aws", "azure", "docker", "kubernetes", "terraform", "linux", "networking"
+      ]
+    },
+    {
+      "name": "devops engineer",
+      "required_skills": [
+        "docker", "kubernetes", "jenkins", "ci cd", "linux", "git", "terraform"
+      ]
+    },
+    {
+      "name": "android developer",
+      "required_skills": [
+        "java", "kotlin", "android sdk", "xml", "firebase", "rest api"
+      ]
+    },
+    {
+      "name": "flutter developer",
+      "required_skills": [
+        "dart", "flutter", "firebase", "rest api", "state management", "ui ux"
+      ]
+    }
+  ]
 }
