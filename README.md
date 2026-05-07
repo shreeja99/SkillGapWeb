@@ -1,4 +1,5 @@
 # Smart Skill Gap Analyzer — Web Version
+A website which helps you understand what skills you are currently lacking or missing in order to reach your goal.
 
 ## Stack
 - **Backend**: Java 17 + Spring Boot 3.2
