@@ -3,16 +3,12 @@ package com.skillgap.model;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * MODEL: Role
- * OOP: Encapsulation — private fields, public getters/setters
- * Stores a job role's name and its required skills.
- */
+
 public class Role {
 
     private String roleName;
     private List<String> requiredSkills;
-    private boolean isCustomRole; // true = from API, false = from JSON
+    private boolean isCustomRole; 
 
     public Role(String roleName) {
         this.roleName = roleName.trim().toLowerCase();

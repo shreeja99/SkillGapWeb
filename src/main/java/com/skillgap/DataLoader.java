@@ -11,12 +11,7 @@ import jakarta.annotation.PostConstruct;
 import java.io.InputStream;
 import java.util.*;
 
-/**
- * SERVICE: DataLoader
- * OOP: Abstraction — hides all file I/O and JSON parsing
- * Loads roles from roles.json into a HashMap at startup.
- * Uses Jackson (included via Spring Boot) for clean JSON parsing.
- */
+
 @Service
 public class DataLoader {
 
@@ -26,10 +21,7 @@ public class DataLoader {
     // In-memory store: role name → Role object
     private HashMap<String, Role> rolesMap = new HashMap<>();
 
-    /**
-     * Runs automatically after Spring creates this bean.
-     * Loads all roles from roles.json into memory.
-     */
+    
     @PostConstruct
     public void loadRoles() {
         try {

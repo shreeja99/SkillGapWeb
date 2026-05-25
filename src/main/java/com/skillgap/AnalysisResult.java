@@ -2,12 +2,7 @@ package com.skillgap.model;
 
 import java.util.List;
 
-/**
- * MODEL: AnalysisResult
- * OOP: Encapsulation — Data Transfer Object (DTO)
- * Holds the complete result of a skill gap analysis.
- * Serialized to JSON by Spring Boot and sent to the frontend.
- */
+
 public class AnalysisResult {
 
     private String userName;

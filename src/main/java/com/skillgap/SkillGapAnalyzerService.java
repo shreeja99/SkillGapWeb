@@ -8,20 +8,11 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * SERVICE: SkillGapAnalyzerService
- * OOP: Abstraction + Single Responsibility
- * Core logic: compares User skills vs Role skills → AnalysisResult
- * No I/O, no API calls — pure calculation.
- */
+
 @Service
 public class SkillGapAnalyzerService {
 
-    /**
-     * Compares user skills with role's required skills.
-     * Calculates gap % and readiness %.
-     * Returns a fully populated AnalysisResult.
-     */
+    
     public AnalysisResult analyze(User user, Role role) {
         AnalysisResult result = new AnalysisResult();
         result.setUserName(user.getName());
@@ -64,10 +55,7 @@ public class SkillGapAnalyzerService {
         return result;
     }
 
-    /**
-     * Checks if a required skill is in the user's skill list.
-     * Uses partial matching to handle slight variations.
-     */
+    
     private boolean skillMatches(List<String> userSkills, String required) {
         for (String userSkill : userSkills) {
             if (userSkill.equals(required)) return true;
