@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Results — Skill Gap Analyzer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink: #1a1a2e; --ink-2: #4a4a6a; --ink-3: #8888a8;
+  --rule: #e4e4f0; --rule-2: #f0f0f8; --page: #fafafa; --white: #ffffff;
+  --accent: #2563eb; --accent-lt: #eff6ff; --accent-dk: #1d4ed8;
+  --green: #059669; --green-lt: #ecfdf5;
+  --red: #dc2626; --red-lt: #fef2f2;
+  --amber: #d97706; --amber-lt: #fffbeb;
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 4px 12px rgba(0,0,0,0.05);
+}
+html { scroll-behavior: smooth; }
+body { background: var(--page); color: var(--ink); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.65; min-height: 100vh; }
+
+/* ── NAV ── */
+nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 40px; background: var(--white);
+  border-bottom: 1px solid var(--rule);
+  position: sticky; top: 0; z-index: 100;
+}
+.nav-logo { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--ink); display: flex; align-items: center; gap: 8px; }
+.nav-logo em { font-style: italic; color: var(--accent); }
+.nav-steps { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; }
+.nav-step { padding: 5px 12px; border-radius: 20px; color: var(--ink-3); }
+.nav-step.active { background: var(--accent-lt); color: var(--accent); }
+.nav-step.done { color: var(--green); }
+.nav-divider { color: var(--rule); font-size: 16px; }
+
+/* ── NAV ACTIONS ── */
+.nav-actions { display: flex; gap: 8px; }
+.btn-nav {
+  padding: 7px 14px; border-radius: var(--radius); font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s;
+  display: flex; align-items: center; gap: 5px;
+}
+.btn-nav.outline { background: none; border: 1.5px solid var(--rule); color: var(--ink-2); }
+.btn-nav.outline:hover { border-color: var(--accent); color: var(--accent); }
+.btn-nav.solid { background: var(--accent); border: 1.5px solid var(--accent); color: #fff; }
+.btn-nav.solid:hover { background: var(--accent-dk); }
+
+/* ── LAYOUT ── */
+.page-wrap { max-width: 860px; margin: 0 auto; padding: 44px 24px 80px; }
+
+/* ── RESULT HEADER CARD ── */
+.result-header {
+  background: var(--white); border: 1px solid var(--rule); border-radius: 14px;
+  padding: 36px 40px; margin-bottom: 16px; box-shadow: var(--shadow);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 24px; flex-wrap: wrap;
+  animation: fadeUp 0.35s ease both;
+}
+.result-meta { flex: 1; min-width: 200px; }
+.result-meta .eyebrow {
+  font-family: 'DM Mono', monospace; font-size: 10.5px;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--ink-3); margin-bottom: 6px;
+}
+.result-meta h2 {
+  font-family: 'DM Serif Display', serif; font-size: 32px;
+  font-weight: 400; color: var(--ink); line-height: 1.1; margin-bottom: 6px;
+}
+.result-meta .sub { font-size: 13px; color: var(--ink-3); margin-top: 4px; }
+.source-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 600; padding: 3px 10px;
+  border-radius: 20px; margin-top: 10px;
+}
+.source-badge.local { background: var(--green-lt); color: var(--green); }
+.source-badge.api   { background: var(--amber-lt); color: var(--amber); }
+
+/* ── CIRCLE ── */
+.readiness-circle {
+  width: 120px; height: 120px; flex-shrink: 0;
+  position: relative; display: flex; align-items: center; justify-content: center;
+}
+.readiness-circle svg { position: absolute; top: 0; left: 0; transform: rotate(-90deg); }
+.readiness-circle svg circle { transition: stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1); }
+.circle-inner { text-align: center; z-index: 1; }
+.circle-pct { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--ink); line-height: 1; }
+.circle-lbl { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-3); margin-top: 2px; }
+
+/* ── BANNER ── */
+.msg-banner {
+  border-radius: var(--radius); padding: 14px 18px; margin-bottom: 16px;
+  font-size: 14px; font-weight: 500; display: flex; align-items: center;
+  gap: 10px; border: 1px solid; animation: fadeUp 0.4s ease both;
+}
+.msg-banner.excellent { background: var(--green-lt); border-color: #bbf7d0; color: var(--green); }
+.msg-banner.good      { background: var(--accent-lt); border-color: #bfdbfe; color: var(--accent-dk); }
+.msg-banner.low       { background: var(--amber-lt); border-color: #fde68a; color: var(--amber); }
+.msg-banner.start     { background: var(--red-lt); border-color: #fecaca; color: var(--red); }
+
+/* ── STATS ── */
+.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+@media (max-width: 500px) { .stats-row { grid-template-columns: 1fr 1fr; } }
+.stat-card {
+  background: var(--white); border: 1px solid var(--rule);
+  border-radius: var(--radius); padding: 20px 22px; box-shadow: var(--shadow);
+  animation: fadeUp 0.4s ease both;
+}
+.stat-val { font-family: 'DM Serif Display', serif; font-size: 34px; font-weight: 400; line-height: 1; margin-bottom: 4px; }
+.stat-label { font-size: 12px; font-weight: 500; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-card.green .stat-val { color: var(--green); }
+.stat-card.red   .stat-val { color: var(--red); }
+.stat-card.blue  .stat-val { color: var(--accent); }
+
+/* ── PROGRESS ── */
+.progress-wrap {
+  background: var(--white); border: 1px solid var(--rule); border-radius: var(--radius);
+  padding: 20px 24px; margin-bottom: 16px; box-shadow: var(--shadow);
+  animation: fadeUp 0.45s ease both;
+}
+.progress-label { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; font-weight: 500; color: var(--ink-2); margin-bottom: 10px; }
+.progress-label span { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--ink); }
+.progress-track { height: 10px; background: var(--rule); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent), #60a5fa); transition: width 1.2s cubic-bezier(.4,0,.2,1); width: 0%; }
+
+/* ── SKILL PANELS ── */
+.skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+@media (max-width: 560px) { .skills-grid { grid-template-columns: 1fr; } }
+.skill-panel { background: var(--white); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); animation: fadeUp 0.5s ease both; }
+.skill-panel-head { padding: 14px 18px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--rule); }
+.skill-panel.matching .skill-panel-head { background: var(--green-lt); color: var(--green); }
+.skill-panel.missing  .skill-panel-head { background: var(--red-lt); color: var(--red); }
+.skill-panel-count { font-family: 'DM Mono', monospace; font-size: 18px; }
+.skill-list { padding: 12px 0; }
+.skill-item { display: flex; align-items: center; gap: 10px; padding: 8px 18px; font-size: 13.5px; color: var(--ink-2); border-bottom: 1px solid var(--rule-2); transition: background 0.1s; }
+.skill-item:last-child { border-bottom: none; }
+.skill-item:hover { background: var(--rule-2); }
+.skill-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.matching .skill-dot { background: var(--green); }
+.missing  .skill-dot { background: var(--red); }
+.skill-name { flex: 1; }
+.empty-state { padding: 24px 18px; text-align: center; color: var(--ink-3); font-size: 13px; }
+
+/* ── YOUTUBE LINK ── */
+.yt-link {
+  font-size: 11px; font-weight: 600; color: var(--red);
+  text-decoration: none; background: var(--red-lt);
+  border: 1px solid #fecaca; padding: 2px 8px;
+  border-radius: 20px; white-space: nowrap; flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+}
+.yt-link:hover { background: var(--red); color: #fff; }
+
+/* ── HISTORY ── */
+.section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.section-title { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; color: var(--ink); }
+.section-eyebrow { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-3); margin-bottom: 4px; }
+.history-card { background: var(--white); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 10px; box-shadow: var(--shadow); }
+.history-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+.history-role { font-weight: 600; font-size: 15px; color: var(--ink); }
+.history-user { font-size: 12px; color: var(--ink-3); margin-top: 3px; }
+.history-pct { font-family: 'DM Serif Display', serif; font-size: 28px; font-weight: 400; line-height: 1; }
+.history-bar-track { height: 6px; background: var(--rule); border-radius: 99px; overflow: hidden; margin-bottom: 10px; }
+.history-bar-fill { height: 100%; border-radius: 99px; transition: width 0.8s ease; }
+.history-stats { display: flex; gap: 16px; font-size: 12px; color: var(--ink-3); font-weight: 500; }
+
+/* ── CLEAR BTN ── */
+.btn-clear {
+  background: none; border: 1.5px solid var(--rule); color: var(--ink-3);
+  font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+  padding: 6px 12px; border-radius: var(--radius); cursor: pointer; transition: all 0.15s;
+}
+.btn-clear:hover { border-color: var(--red); color: var(--red); }
+
+/* ── DIVIDER ── */
+.divider { border: none; border-top: 1px solid var(--rule); margin: 32px 0; }
+
+/* ── PRINT ── */
+@media print {
+  nav, .nav-actions, #historySection, .yt-link, .btn-nav { display: none !important; }
+  body { background: white; }
+  .page-wrap { padding: 20px; max-width: 100%; }
+  .result-header, .stat-card, .skill-panel, .progress-wrap, .msg-banner { box-shadow: none !important; }
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Skill Gap <em>Analyzer</em></div>
+  <div class="nav-steps">
+    <div class="nav-step done">① Skills</div>
+    <div class="nav-divider">›</div>
+    <div class="nav-step done">② Role</div>
+    <div class="nav-divider">›</div>
+    <div class="nav-step active">③ Results</div>
+  </div>
+  <div class="nav-actions">
+    <button class="btn-nav outline" onclick="window.location.href='index.html'">← New Analysis</button>
+    <button class="btn-nav solid" onclick="window.print()">⬇ Download PDF</button>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- RESULT HEADER -->
+  <div class="result-header">
+    <div class="result-meta">
+      <div class="eyebrow">Analysis Result</div>
+      <h2 id="resRoleName">—</h2>
+      <div class="sub" id="resUserName">—</div>
+    
+    </div>
+    <div style="text-align:center">
+      <div class="readiness-circle">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="50" fill="none" stroke="#e4e4f0" stroke-width="9"/>
+          <circle id="circleProgress" cx="60" cy="60" r="50" fill="none"
+            stroke="#2563eb" stroke-width="9" stroke-linecap="round"
+            stroke-dasharray="314" stroke-dashoffset="314"/>
+        </svg>
+        <div class="circle-inner">
+          <div class="circle-pct" id="circlePct">0%</div>
+          <div class="circle-lbl">Ready</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- READINESS MESSAGE -->
+  <div class="msg-banner" id="msgBanner">
+    <span id="msgText"></span>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card blue">
+      <div class="stat-val" id="statTotal">—</div>
+      <div class="stat-label">Required Skills</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-val" id="statMatching">—</div>
+      <div class="stat-label">You Have</div>
+    </div>
+    <div class="stat-card red">
+      <div class="stat-val" id="statMissing">—</div>
+      <div class="stat-label">To Learn</div>
+    </div>
+  </div>
+
+  <!-- PROGRESS BAR -->
+  <div class="progress-wrap">
+    <div class="progress-label">
+      Readiness Progress
+      <span id="progressPct">0%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <!-- SKILL LISTS -->
+  <div class="skills-grid">
+    <div class="skill-panel matching">
+      <div class="skill-panel-head">
+        <span>Matching</span>
+        <span class="skill-panel-count" id="matchCount">0</span>
+      </div>
+      <div class="skill-list" id="matchList"></div>
+    </div>
+    <div class="skill-panel missing">
+      <div class="skill-panel-head">
+        <span>Missing</span>
+        <span class="skill-panel-count" id="missCount">0</span>
+      </div>
+      <div class="skill-list" id="missList"></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- HISTORY -->
+  <div id="historySection" style="display:none">
+    <div class="section-head">
+      <div>
+        <div class="section-eyebrow">Recent</div>
+        <div class="section-title">Past Analyses</div>
+      </div>
+      <button class="btn-clear" onclick="clearHistory()">✕ Clear History</button>
+    </div>
+    <div id="historyList"></div>
+  </div>
+
+</div>
+
+<script>
+// ── On load: read result from sessionStorage ───────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const raw = sessionStorage.getItem('sga_result');
+  if (!raw) { window.location.href = 'index.html'; return; }
+
+  const d = JSON.parse(raw);
+
+  // Save to history first
+  saveToHistory(d);
+
+  // Render everything
+  renderHeader(d);
+  renderBanner(d);
+  renderStats(d);
+  renderProgress(d);
+  renderSkillLists(d);
+  renderHistory();
+});
+
+// ── Render header ──────────────────────────────────────────────
+function renderHeader(d) {
+  document.getElementById('resRoleName').textContent =
+    d.roleName.replace(/\b\w/g, c => c.toUpperCase());
+  document.getElementById('resUserName').textContent =
+    `For ${d.userName}  ·  ${d.totalRequired} required skills`;
+
+  
+  
+
+  // Animate circle after short delay so transition fires
+  const pct = d.readinessPercentage;
+  setTimeout(() => {
+    const circumference = 314;
+    const offset = circumference - (pct / 100) * circumference;
+    document.getElementById('circleProgress').style.strokeDashoffset = offset;
+    document.getElementById('circleProgress').setAttribute('stroke',
+      pct >= 80 ? '#059669' : pct >= 50 ? '#2563eb' : pct >= 30 ? '#d97706' : '#dc2626');
+  }, 100);
+
+  document.getElementById('circlePct').textContent = Math.round(pct) + '%';
+}
+
+// ── Render banner ──────────────────────────────────────────────
+function renderBanner(d) {
+  const pct = d.readinessPercentage;
+  const cls = pct >= 80 ? 'excellent' : pct >= 60 ? 'good' : pct >= 30 ? 'low' : 'start';
+  document.getElementById('msgBanner').className = `msg-banner ${cls}`;
+  document.getElementById('msgText').textContent  = d.readinessMessage;
+}
+
+// ── Render stats ───────────────────────────────────────────────
+function renderStats(d) {
+  document.getElementById('statTotal').textContent    = d.totalRequired;
+  document.getElementById('statMatching').textContent = d.matchingSkills.length;
+  document.getElementById('statMissing').textContent  = d.missingSkills.length;
+}
+
+// ── Render progress bar ────────────────────────────────────────
+function renderProgress(d) {
+  const pct = d.readinessPercentage;
+  setTimeout(() => {
+    document.getElementById('progressFill').style.width = pct + '%';
+  }, 100);
+  document.getElementById('progressPct').textContent = pct.toFixed(1) + '%';
+}
+
+// ── Render skill lists ─────────────────────────────────────────
+function renderSkillLists(d) {
+  renderSkillList('matchList', 'matchCount', d.matchingSkills, false, '(none)');
+  renderSkillList('missList',  'missCount',  d.missingSkills,  true,  'All skills covered! 🎉');
+}
+
+function renderSkillList(listId, countId, skills, showYT, emptyMsg) {
+  document.getElementById(countId).textContent = skills.length;
+  const list = document.getElementById(listId);
+  if (!skills.length) {
+    list.innerHTML = `<div class="empty-state">${emptyMsg}</div>`;
+    return;
+  }
+  list.innerHTML = skills.map(s => {
+    const label = s.replace(/\b\w/g, c => c.toUpperCase());
+    const ytLink = showYT
+      ? `<a class="yt-link" href="https://www.youtube.com/results?search_query=${encodeURIComponent(s + ' tutorial')}" target="_blank">▶ Learn</a>`
+      : '';
+    return `<div class="skill-item">
+      <span class="skill-dot"></span>
+      <span class="skill-name">${label}</span>
+      ${ytLink}
+    </div>`;
+  }).join('');
+}
+
+// ── History ────────────────────────────────────────────────────
+function saveToHistory(d) {
+  let history = getHistory();
+  history.unshift({
+    userName:            d.userName,
+    roleName:            d.roleName,
+    readinessPercentage: d.readinessPercentage,
+    gapPercentage:       d.gapPercentage,
+    matchingCount:       d.matchingSkills.length,
+    missingCount:        d.missingSkills.length,
+    totalRequired:       d.totalRequired,
+    savedAt:             new Date().toLocaleString()
+  });
+  if (history.length > 3) history = history.slice(0, 3);
+  localStorage.setItem('skillgap_history', JSON.stringify(history));
+}
+
+function getHistory() {
+  try { return JSON.parse(localStorage.getItem('skillgap_history')) || []; }
+  catch { return []; }
+}
+
+function renderHistory() {
+  const history = getHistory();
+  const section = document.getElementById('historySection');
+  const list    = document.getElementById('historyList');
+  if (!history.length) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  list.innerHTML = history.map(h => `
+    <div class="history-card">
+      <div class="history-top">
+        <div>
+          <div class="history-role">${h.roleName.replace(/\b\w/g, c => c.toUpperCase())}</div>
+          <div class="history-user">${h.userName} · ${h.savedAt}</div>
+        </div>
+        <div class="history-pct" style="color:${h.readinessPercentage >= 60 ? 'var(--green)' : h.readinessPercentage >= 30 ? 'var(--amber)' : 'var(--red)'}">
+          ${Math.round(h.readinessPercentage)}%
+        </div>
+      </div>
+      <div class="history-bar-track">
+        <div class="history-bar-fill" style="width:${h.readinessPercentage}%; background:${h.readinessPercentage >= 60 ? 'var(--green)' : h.readinessPercentage >= 30 ? 'var(--amber)' : 'var(--red)'}"></div>
+      </div>
+      <div class="history-stats">
+        <span>✓ ${h.matchingCount} matching</span>
+        <span>✗ ${h.missingCount} missing</span>
+        <span>${h.totalRequired} required</span>
+      </div>
+    </div>`).join('');
+}
+
+function clearHistory() {
+  localStorage.removeItem('skillgap_history');
+  renderHistory();
+}
+</script>
+</body>
+</html>

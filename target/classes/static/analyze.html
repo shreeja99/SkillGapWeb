@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Select Role — Skill Gap Analyzer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink: #1a1a2e; --ink-2: #4a4a6a; --ink-3: #8888a8;
+  --rule: #e4e4f0; --rule-2: #f0f0f8; --page: #fafafa; --white: #ffffff;
+  --accent: #2563eb; --accent-lt: #eff6ff; --accent-dk: #1d4ed8;
+  --green: #059669; --green-lt: #ecfdf5;
+  --red: #dc2626; --red-lt: #fef2f2;
+  --amber: #d97706; --amber-lt: #fffbeb;
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 4px 12px rgba(0,0,0,0.05);
+}
+html { scroll-behavior: smooth; }
+body { background: var(--page); color: var(--ink); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.65; min-height: 100vh; }
+
+/* ── NAV ── */
+nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 40px; background: var(--white);
+  border-bottom: 1px solid var(--rule);
+  position: sticky; top: 0; z-index: 100;
+}
+.nav-logo { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--ink); display: flex; align-items: center; gap: 8px; }
+.nav-logo em { font-style: italic; color: var(--accent); }
+.nav-steps { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; }
+.nav-step { display: flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 20px; color: var(--ink-3); }
+.nav-step.active { background: var(--accent-lt); color: var(--accent); }
+.nav-step.done { color: var(--green); }
+.nav-divider { color: var(--rule); font-size: 16px; }
+
+/* ── LAYOUT ── */
+.page-wrap { max-width: 680px; margin: 0 auto; padding: 52px 24px 80px; }
+
+/* ── HERO ── */
+.hero { margin-bottom: 44px; }
+.eyebrow { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; letter-spacing: 2.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+.hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(32px, 5vw, 48px); font-weight: 400; line-height: 1.1; color: var(--ink); letter-spacing: -0.5px; }
+.hero h1 em { font-style: italic; color: var(--accent); }
+.hero p { margin-top: 14px; color: var(--ink-2); font-size: 16px; font-weight: 300; }
+
+/* ── SUMMARY PILL ── */
+.summary-pill {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--white); border: 1px solid var(--rule);
+  border-radius: 99px; padding: 8px 16px;
+  font-size: 13px; color: var(--ink-2);
+  box-shadow: var(--shadow); margin-bottom: 28px;
+}
+.summary-pill strong { color: var(--ink); }
+.summary-pill .edit-link {
+  color: var(--accent); font-size: 12px; font-weight: 600;
+  text-decoration: none; cursor: pointer;
+}
+.summary-pill .edit-link:hover { text-decoration: underline; }
+
+/* ── CARD ── */
+.card { background: var(--white); border: 1px solid var(--rule); border-radius: 14px; padding: 36px 40px; box-shadow: var(--shadow); margin-bottom: 16px; animation: fadeUp 0.35s ease both; }
+.card h2 { font-family: 'DM Serif Display', serif; font-size: 20px; font-weight: 400; color: var(--ink); margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--rule); }
+
+.field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 20px; }
+.field:last-child { margin-bottom: 0; }
+label { font-size: 12px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; color: var(--ink-2); }
+
+input, select {
+  width: 100%; font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--ink);
+  background: var(--page); border: 1.5px solid var(--rule); border-radius: var(--radius);
+  padding: 11px 14px; transition: border-color 0.15s, box-shadow 0.15s; outline: none; -webkit-appearance: none;
+}
+input::placeholder { color: var(--ink-3); }
+input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.10); background: var(--white); }
+select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238888a8' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px;
+}
+.hint { font-size: 12px; color: var(--ink-3); }
+
+/* ── TOGGLE ── */
+.toggle { display: flex; background: var(--rule-2); border: 1.5px solid var(--rule); border-radius: var(--radius); padding: 3px; gap: 3px; margin-bottom: 20px; }
+.toggle button { flex: 1; background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; color: var(--ink-3); padding: 8px 12px; border-radius: 7px; transition: all 0.15s; }
+.toggle button.active { background: var(--white); color: var(--accent); box-shadow: var(--shadow); font-weight: 600; }
+
+/* ── SUGGESTION CHIPS ── */
+.suggestion-label { font-size: 12px; font-weight: 600; color: var(--accent); margin-bottom: 10px; }
+.suggestion-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+.suggestion-chip {
+  background: var(--accent-lt); border: 1.5px solid #bfdbfe; color: var(--accent-dk);
+  font-size: 13px; font-weight: 600; padding: 7px 14px; border-radius: 20px;
+  cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.suggestion-chip:hover, .suggestion-chip.selected {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+}
+
+/* ── BUTTONS ── */
+.btn-row { display: flex; gap: 10px; margin-top: 8px; }
+
+.btn-back {
+  padding: 14px 20px; background: none; color: var(--ink-2);
+  border: 1.5px solid var(--rule); border-radius: var(--radius);
+  font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
+  cursor: pointer; transition: border-color 0.15s, color 0.15s;
+  display: flex; align-items: center; gap: 6px;
+}
+.btn-back:hover { border-color: var(--accent); color: var(--accent); }
+
+.btn-next {
+  flex: 1; padding: 14px 24px; background: var(--accent); color: #fff;
+  font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+  border: none; border-radius: var(--radius); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+}
+.btn-next:hover { background: var(--accent-dk); box-shadow: 0 4px 16px rgba(37,99,235,0.25); }
+.btn-next:active { transform: scale(0.99); }
+.btn-next:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+.btn-next .spinner {
+  width: 16px; height: 16px; border: 2.5px solid rgba(255,255,255,0.35);
+  border-top-color: #fff; border-radius: 50%;
+  animation: spin 0.7s linear infinite; display: none;
+}
+.btn-next.loading .spinner { display: block; }
+.btn-next.loading .btn-text { opacity: 0.7; }
+
+/* ── ERROR ── */
+.error-box {
+  background: var(--red-lt); border: 1px solid #fecaca; color: var(--red);
+  border-radius: var(--radius); padding: 14px 18px; font-size: 14px;
+  margin-top: 14px; display: none;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Skill Gap <em>Analyzer</em></div>
+  <div class="nav-steps">
+    <div class="nav-step done">① Skills</div>
+    <div class="nav-divider">›</div>
+    <div class="nav-step active">② Role</div>
+    <div class="nav-divider">›</div>
+    <div class="nav-step">③ Results</div>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="hero">
+    <div class="eyebrow">Step 2 of 3</div>
+    <h1>Choose your<br><em>target role</em></h1>
+    <p>Select from our predefined roles or enter any custom role — AI will fetch its required skills.</p>
+  </div>
+
+  <!-- Summary of step 1 -->
+  <div class="summary-pill">
+    <span>👤 <strong id="summaryName">—</strong></span>
+    <span>·</span>
+    <span id="summarySkillCount">—</span> skills entered
+    <a class="edit-link" href="index.html">✎ Edit</a>
+  </div>
+
+  <!-- AI Suggestions from Step 1 -->
+  <div class="card" id="suggestCard" style="display:none">
+    <h2>✨ Suggested for You</h2>
+    <p style="font-size:13px; color:var(--ink-3); margin-bottom:16px;">Based on your skills, these roles are a good fit. Click one to select it.</p>
+    <div class="suggestion-list" id="suggestionList"></div>
+  </div>
+
+  <!-- Role Selection -->
+  <div class="card">
+    <h2>Select Role</h2>
+
+    <div class="toggle">
+      <button class="active" id="togglePredefined" onclick="switchRoleMode('predefined')">Predefined Role</button>
+      <button id="toggleCustom" onclick="switchRoleMode('custom')">Custom Role (AI)</button>
+    </div>
+
+    <div id="predefinedField">
+      <div class="field">
+        <label for="roleSelect">Choose a role</label>
+        <select id="roleSelect">
+          <option value="">Loading roles…</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="customField" style="display:none">
+      <div class="field">
+        <label for="customRole">Enter role name</label>
+        <input type="text" id="customRole" placeholder="e.g. blockchain developer, game developer">
+        <span class="hint">AI will generate required skills for this role using Groq API</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="error-box" id="errorBox"></div>
+
+  <div class="btn-row">
+    <button class="btn-back" onclick="window.location.href='index.html'">← Back</button>
+    <button class="btn-next" id="analyzeBtn" onclick="runAnalysis()">
+      <div class="spinner"></div>
+      <span class="btn-text">Analyze Skill Gap →</span>
+    </button>
+  </div>
+
+</div>
+
+<script>
+const API_BASE = '';
+let roleMode = 'predefined';
+
+window.addEventListener('DOMContentLoaded', async () => {
+  // ── Guard: must have step 1 data ──
+  const saved = sessionStorage.getItem('sga_data');
+  if (!saved) { window.location.href = 'index.html'; return; }
+
+  const data = JSON.parse(saved);
+
+  // Show summary
+  document.getElementById('summaryName').textContent = data.name;
+  const skillCount = data.skills.split(',').filter(s => s.trim()).length;
+  document.getElementById('summarySkillCount').textContent = skillCount;
+
+  // ── Load predefined roles ──
+  try {
+    const res   = await fetch(`${API_BASE}/api/roles`);
+    const roles = await res.json();
+    const sel   = document.getElementById('roleSelect');
+    sel.innerHTML = '<option value="">— Select a role —</option>';
+    roles.forEach(r => {
+      const opt = document.createElement('option');
+      opt.value = r;
+      opt.textContent = r.replace(/\b\w/g, c => c.toUpperCase());
+      sel.appendChild(opt);
+    });
+
+    // ── Pre-select if suggestion was clicked on page 1 ──
+    const preselected = sessionStorage.getItem('sga_preselected_role');
+    if (preselected) {
+      const normalized = preselected.trim().toLowerCase();
+      const match = Array.from(sel.options).find(o => o.value === normalized);
+      if (match) {
+        sel.value = normalized;
+      } else {
+        switchRoleMode('custom');
+        document.getElementById('customRole').value = preselected;
+      }
+    }
+
+  } catch (e) {
+    document.getElementById('roleSelect').innerHTML =
+      '<option value="">Could not load roles — is the server running?</option>';
+  }
+
+  // ── Show AI suggestions from page 1 ──
+  const suggestions = sessionStorage.getItem('sga_suggested');
+  if (suggestions) {
+    const roles = JSON.parse(suggestions);
+    if (roles.length) {
+      document.getElementById('suggestCard').style.display = 'block';
+      document.getElementById('suggestionList').innerHTML = roles.map(r => `
+        <div class="suggestion-chip" onclick="applySuggestion('${r}', this)">
+          ✦ ${r.replace(/\b\w/g, c => c.toUpperCase())}
+        </div>`).join('');
+    }
+  }
+});
+
+function switchRoleMode(mode) {
+  roleMode = mode;
+  document.getElementById('predefinedField').style.display = mode === 'predefined' ? '' : 'none';
+  document.getElementById('customField').style.display     = mode === 'custom'     ? '' : 'none';
+  document.getElementById('togglePredefined').className    = mode === 'predefined' ? 'active' : '';
+  document.getElementById('toggleCustom').className        = mode === 'custom'     ? 'active' : '';
+}
+
+function applySuggestion(role, el) {
+  // Highlight chip
+  document.querySelectorAll('.suggestion-chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+
+  const normalized = role.trim().toLowerCase();
+  const sel = document.getElementById('roleSelect');
+  const match = Array.from(sel.options).find(o => o.value === normalized);
+  if (match) {
+    switchRoleMode('predefined');
+    sel.value = normalized;
+  } else {
+    switchRoleMode('custom');
+    document.getElementById('customRole').value = role;
+  }
+}
+
+async function runAnalysis() {
+  const saved = sessionStorage.getItem('sga_data');
+  if (!saved) { window.location.href = 'index.html'; return; }
+  const { name, skills } = JSON.parse(saved);
+
+  const role = roleMode === 'predefined'
+    ? document.getElementById('roleSelect').value
+    : document.getElementById('customRole').value.trim();
+
+  hideError();
+  if (!role) { showError('Please select or enter a role.'); return; }
+
+  // Set loading
+  const btn = document.getElementById('analyzeBtn');
+  btn.disabled = true; btn.classList.add('loading');
+  document.querySelector('.btn-text').textContent = 'Analyzing…';
+
+  try {
+    const res = await fetch(`${API_BASE}/api/analyze`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, skills, role })
+    });
+
+    if (!res.ok) throw new Error(await res.text() || `Server error ${res.status}`);
+
+    const result = await res.json();
+
+    // Save result to sessionStorage → results page reads it
+    sessionStorage.setItem('sga_result', JSON.stringify(result));
+    window.location.href = 'results.html';
+
+  } catch (e) {
+    showError(e.message || 'Could not connect to server. Make sure Spring Boot is running.');
+    btn.disabled = false; btn.classList.remove('loading');
+    document.querySelector('.btn-text').textContent = 'Analyze Skill Gap →';
+  }
+}
+
+function showError(msg) { const b = document.getElementById('errorBox'); b.textContent = msg; b.style.display = 'block'; }
+function hideError()    { document.getElementById('errorBox').style.display = 'none'; }
+</script>
+</body>
+</html>

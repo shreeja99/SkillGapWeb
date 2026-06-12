@@ -116,4 +116,17 @@ public class SkillGapController {
 
         return ResponseEntity.ok(result);
     }
+/**
+ * POST /api/suggest-roles
+ * Body: { "skills": "java, spring boot, sql" }
+ * Returns: { "roles": ["Java Developer", "Backend Developer", "Software Engineer"] }
+ */
+@PostMapping("/suggest-roles")
+public ResponseEntity<?> suggestRoles(@RequestBody Map<String, String> body) {
+    String skills = body.getOrDefault("skills", "").trim();
+    if (skills.isEmpty()) return ResponseEntity.badRequest().body("Skills are required.");
+
+    List<String> roles = apiService.suggestRolesForSkills(skills);
+    return ResponseEntity.ok(Map.of("roles", roles));
+}
 }

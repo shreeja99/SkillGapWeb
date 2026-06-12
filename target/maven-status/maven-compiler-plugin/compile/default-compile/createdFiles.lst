@@ -1,3 +1,4 @@
+com\skillgap\service\SkillGapAnalyzerService$SemanticGapResult.class
 com\skillgap\SkillGapApplication.class
 com\skillgap\controller\SkillGapController.class
 com\skillgap\service\SkillGapAnalyzerService.class
@@ -6,4 +7,6 @@ com\skillgap\model\User.class
 com\skillgap\service\DataLoader.class
 com\skillgap\service\ResumeParserService.class
 com\skillgap\model\Role.class
+com\skillgap\service\ApifyService$JobPosting.class
 com\skillgap\service\ApiService.class
+com\skillgap\service\ApifyService.class
